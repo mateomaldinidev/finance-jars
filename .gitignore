@@ -137,3 +137,14 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# SQLite local (Prisma)
+apps/api/prisma/*.db
+apps/api/prisma/*.db-journal
+apps/api/prisma/dev.db
+apps/api/prisma/dev.db-journal
+
+# Prisma config transpilation artifacts
+apps/api/prisma.config.js
+apps/api/prisma.config.js.map
+apps/api/prisma.config.d.ts
