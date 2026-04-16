@@ -4,9 +4,7 @@ import type { IncomeDistributionRepository } from '../../../domain/repositories/
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
-export class PrismaIncomeDistributionRepository
-  implements IncomeDistributionRepository
-{
+export class PrismaIncomeDistributionRepository implements IncomeDistributionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(

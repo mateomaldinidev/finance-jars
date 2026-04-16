@@ -1,4 +1,3 @@
-
 export class IncomeResponseDto {
   id!: string;
   userId!: string;

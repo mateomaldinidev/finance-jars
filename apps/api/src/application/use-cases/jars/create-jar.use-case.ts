@@ -1,9 +1,13 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JarEntity } from '../../../domain/entities/jar.entity';
 import { JarRepository } from '../../../domain/repositories/jar.repository';
 import { JAR_REPOSITORY } from '../../../domain/repositories/repository.tokens';
 import { Inject } from '@nestjs/common';
-import { isValidJarColor } from '../../../infrastructure/jars/jar-colors';
+import { isValidJarColor } from '../../../infrastructure/constants/jar-colors';
 
 type CreateJarInput = {
   userId: string;
@@ -17,7 +21,9 @@ type CreateJarInput = {
 
 @Injectable()
 export class CreateJarUseCase {
-  constructor(@Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository) {}
+  constructor(
+    @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
+  ) {}
 
   async execute(input: CreateJarInput): Promise<JarEntity> {
     // Validate color
@@ -31,7 +37,10 @@ export class CreateJarUseCase {
     }
 
     // Check if name already exists for this user
-    const existing = await this.jarRepository.findByName(input.name, input.userId);
+    const existing = await this.jarRepository.findByName(
+      input.name,
+      input.userId,
+    );
     if (existing) {
       throw new BadRequestException('Jar with this name already exists');
     }

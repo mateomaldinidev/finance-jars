@@ -1,4 +1,3 @@
-
 export class DistributionMovementDto {
   jarId!: string;
   jarName!: string;

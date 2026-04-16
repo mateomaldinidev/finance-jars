@@ -10,7 +10,9 @@ type ListJarsInput = {
 
 @Injectable()
 export class ListJarsUseCase {
-  constructor(@Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository) {}
+  constructor(
+    @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
+  ) {}
 
   async execute(input: ListJarsInput): Promise<JarEntity[]> {
     return this.jarRepository.listByUser(input.userId);

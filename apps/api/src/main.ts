@@ -6,7 +6,27 @@ import { PrismaService } from './infrastructure/prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin: true, credentials: true });
+  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  app.enableCors({
+    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('CORS origin not allowed'));
+    },
+  });
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({

@@ -9,7 +9,11 @@
     "dev:api": "npm run dev -w @finance-jars/api",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate -w @finance-jars/api",
+    "prisma:migrate": "npm run prisma:migrate -w @finance-jars/api",
+    "prisma:seed": "npm run prisma:seed -w @finance-jars/api",
+    "prisma:studio": "npm run prisma:studio -w @finance-jars/api"
   },
   "repository": {
     "type": "git",

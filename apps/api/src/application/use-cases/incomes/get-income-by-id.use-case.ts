@@ -12,7 +12,8 @@ type GetIncomeByIdInput = {
 @Injectable()
 export class GetIncomeByIdUseCase {
   constructor(
-    @Inject(INCOME_REPOSITORY) private readonly incomeRepository: IncomeRepository,
+    @Inject(INCOME_REPOSITORY)
+    private readonly incomeRepository: IncomeRepository,
   ) {}
 
   async execute(input: GetIncomeByIdInput): Promise<IncomeEntity> {

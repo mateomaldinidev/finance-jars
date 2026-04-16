@@ -16,6 +16,15 @@ export class GetMonthlyDashboardUseCase {
     }
 
     const [year, monthNumber] = month.split('-').map(Number);
+    if (
+      !Number.isInteger(year) ||
+      !Number.isInteger(monthNumber) ||
+      monthNumber < 1 ||
+      monthNumber > 12
+    ) {
+      throw new BadRequestException('Month must use a valid YYYY-MM value.');
+    }
+
     const from = new Date(Date.UTC(year, monthNumber - 1, 1, 0, 0, 0, 0));
     const to = new Date(Date.UTC(year, monthNumber, 1, 0, 0, 0, 0));
 

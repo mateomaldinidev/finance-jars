@@ -1,57 +1,96 @@
 # finance-jars
 
-Scaffold inicial de una app de finanzas personales **local-first** para uso personal, con base presentable para portfolio.
+Aplicacion local-first de finanzas personales para uso real local y presentacion de portfolio.
 
 ## Stack
 
 - Monorepo con npm workspaces
 - Frontend: React + Vite + TailwindCSS + Zustand
 - Backend: NestJS + Prisma + SQLite
-- Arquitectura backend: clean architecture (domain/application/infrastructure/presentation)
-- UI en español y dark mode
+- Arquitectura backend: domain / application / infrastructure / presentation
 
 ## Estructura
 
 ```txt
 apps/
-  web/     # Frontend desktop-first
-  api/     # Backend NestJS + Prisma
+  api/     # NestJS + Prisma + SQLite
+  web/     # React + Vite
 packages/
   shared/  # Tipos compartidos
 ```
 
-## Estado del scaffold
+## Requisitos
 
-Incluye base mínima para:
+- Node.js 20+
+- npm 10+
 
-- Auth local (username/password) con múltiples usuarios (estructura lista)
-- Frascos y movimientos (estructura y endpoints base)
-- Distribución automática de ingresos por reglas (modelo Prisma base)
-- Dashboard mensual (ruta base frontend + endpoint backend base)
-- Multi-moneda (campos/modelos y estado frontend base)
+## Setup rapido
 
-> No implementa aún toda la lógica de negocio; está preparado para iterar paso a paso con prompts más específicos.
-
-## Scripts (raíz)
+1. Instalar dependencias:
 
 ```bash
 npm install
-npm run dev        # corre apps con script dev en workspaces
-npm run dev:web    # frontend
-npm run dev:api    # backend
-npm run build
-npm run test
-npm run lint
 ```
 
-## Backend Prisma
+2. Configurar entorno API:
 
 ```bash
-npm run prisma:generate -w @finance-jars/api
-npm run prisma:migrate -w @finance-jars/api
-npm run prisma:studio -w @finance-jars/api
+cp apps/api/.env.example apps/api/.env
 ```
 
-Archivo de entorno ejemplo:
+3. Generar cliente Prisma y aplicar migraciones:
 
-- `apps/api/.env.example`
+```bash
+npm run prisma:generate
+npm run prisma:migrate
+```
+
+4. (Opcional) Cargar seed demo:
+
+```bash
+npm run prisma:seed
+```
+
+## Desarrollo
+
+En terminales separadas:
+
+```bash
+npm run dev:api
+npm run dev:web
+```
+
+- API: http://localhost:3000
+- Web: http://localhost:5173
+
+Tambien se puede lanzar todo junto:
+
+```bash
+npm run dev
+```
+
+## Calidad
+
+```bash
+npm run lint
+npm run test
+npm run build
+```
+
+## Scripts utiles de Prisma
+
+```bash
+npm run prisma:generate
+npm run prisma:migrate
+npm run prisma:seed
+npm run prisma:studio
+```
+
+## Usuario demo seed
+
+Si ejecutas el seed:
+
+- Usuario: demo
+- Password: demo12345
+
+Puedes sobrescribirlos con variables `DEMO_USERNAME` y `DEMO_PASSWORD` en `apps/api/.env`.

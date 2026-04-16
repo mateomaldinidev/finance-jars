@@ -23,72 +23,77 @@ export class PrismaDashboardRepository implements DashboardRepository {
 
     const baseCurrency = user?.baseCurrency ?? 'ARS';
 
-    const [monthlyRootIncomes, monthlyExpenses, monthlyByCurrency, jars, jarMovements] =
-      await Promise.all([
-        this.prisma.movement.aggregate({
-          where: {
-            userId: input.userId,
-            type: 'INCOME',
-            jarId: null,
-            currency: baseCurrency,
-            occurredAt: {
-              gte: input.from,
-              lt: input.to,
-            },
+    const [
+      monthlyRootIncomes,
+      monthlyExpenses,
+      monthlyByCurrency,
+      jars,
+      jarMovements,
+    ] = await Promise.all([
+      this.prisma.movement.aggregate({
+        where: {
+          userId: input.userId,
+          type: 'INCOME',
+          jarId: null,
+          currency: baseCurrency,
+          occurredAt: {
+            gte: input.from,
+            lt: input.to,
           },
-          _sum: { amount: true },
-        }),
-        this.prisma.movement.aggregate({
-          where: {
-            userId: input.userId,
-            type: 'EXPENSE',
-            jarId: { not: null },
-            currency: baseCurrency,
-            occurredAt: {
-              gte: input.from,
-              lt: input.to,
-            },
+        },
+        _sum: { amount: true },
+      }),
+      this.prisma.movement.aggregate({
+        where: {
+          userId: input.userId,
+          type: 'EXPENSE',
+          jarId: { not: null },
+          currency: baseCurrency,
+          occurredAt: {
+            gte: input.from,
+            lt: input.to,
           },
-          _sum: { amount: true },
-        }),
-        this.prisma.movement.groupBy({
-          by: ['currency', 'type'],
-          where: {
-            userId: input.userId,
-            occurredAt: {
-              gte: input.from,
-              lt: input.to,
-            },
-            OR: [
-              { type: 'EXPENSE', jarId: { not: null } },
-              { type: 'INCOME', jarId: null },
-            ],
+        },
+        _sum: { amount: true },
+      }),
+      this.prisma.movement.groupBy({
+        by: ['currency', 'type'],
+        where: {
+          userId: input.userId,
+          occurredAt: {
+            gte: input.from,
+            lt: input.to,
           },
-          _sum: { amount: true },
-        }),
-        this.prisma.jar.findMany({
-          where: {
-            userId: input.userId,
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-            name: true,
-            color: true,
-            currency: true,
-            active: true,
-          },
-          orderBy: { createdAt: 'asc' },
-        }),
-        this.prisma.movement.groupBy({
-          by: ['jarId', 'type'],
-          where: {
-            userId: input.userId,
-            jarId: { not: null },
-          },
-          _sum: { amount: true },
-        }),
-      ]);
+          OR: [
+            { type: 'EXPENSE', jarId: { not: null } },
+            { type: 'INCOME', jarId: null },
+          ],
+        },
+        _sum: { amount: true },
+      }),
+      this.prisma.jar.findMany({
+        where: {
+          userId: input.userId,
+          deletedAt: null,
+        },
+        select: {
+          id: true,
+          name: true,
+          color: true,
+          currency: true,
+          active: true,
+        },
+        orderBy: { createdAt: 'asc' },
+      }),
+      this.prisma.movement.groupBy({
+        by: ['jarId', 'type'],
+        where: {
+          userId: input.userId,
+          jarId: { not: null },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
 
     const incomes = new Prisma.Decimal(monthlyRootIncomes._sum.amount ?? 0);
     const expenses = new Prisma.Decimal(monthlyExpenses._sum.amount ?? 0);

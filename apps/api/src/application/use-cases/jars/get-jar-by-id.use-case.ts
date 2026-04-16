@@ -11,7 +11,9 @@ type GetJarByIdInput = {
 
 @Injectable()
 export class GetJarByIdUseCase {
-  constructor(@Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository) {}
+  constructor(
+    @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
+  ) {}
 
   async execute(input: GetJarByIdInput): Promise<JarEntity> {
     const jar = await this.jarRepository.findById(input.jarId, input.userId);

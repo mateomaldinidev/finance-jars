@@ -1,9 +1,13 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JarEntity } from '../../../domain/entities/jar.entity';
 import { JarRepository } from '../../../domain/repositories/jar.repository';
 import { JAR_REPOSITORY } from '../../../domain/repositories/repository.tokens';
 import { Inject } from '@nestjs/common';
-import { isValidJarColor } from '../../../infrastructure/jars/jar-colors';
+import { isValidJarColor } from '../../../infrastructure/constants/jar-colors';
 
 type UpdateJarInput = {
   jarId: string;
@@ -18,11 +22,16 @@ type UpdateJarInput = {
 
 @Injectable()
 export class UpdateJarUseCase {
-  constructor(@Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository) {}
+  constructor(
+    @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
+  ) {}
 
   async execute(input: UpdateJarInput): Promise<JarEntity> {
     // Verify jar exists and belongs to user
-    const existing = await this.jarRepository.findById(input.jarId, input.userId);
+    const existing = await this.jarRepository.findById(
+      input.jarId,
+      input.userId,
+    );
     if (!existing) {
       throw new NotFoundException('Jar not found');
     }
@@ -41,7 +50,10 @@ export class UpdateJarUseCase {
 
     // If changing name, verify no duplicate exists
     if (input.name && input.name !== existing.name) {
-      const duplicate = await this.jarRepository.findByName(input.name, input.userId);
+      const duplicate = await this.jarRepository.findByName(
+        input.name,
+        input.userId,
+      );
       if (duplicate) {
         throw new BadRequestException('Jar with this name already exists');
       }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -52,10 +53,19 @@ export class ExpensesController {
     @Query('to') to?: string,
     @Query('jarId') jarId?: string,
   ): Promise<ExpenseResponseDto[]> {
+    const parsedFrom = this.parseOptionalDate(from, 'from');
+    const parsedTo = this.parseOptionalDate(to, 'to');
+
+    if (parsedFrom && parsedTo && parsedFrom > parsedTo) {
+      throw new BadRequestException(
+        'The "from" date must be less than or equal to "to" date.',
+      );
+    }
+
     const expenses = await this.listExpensesUseCase.execute({
       userId: currentUser.id,
-      from: from ? new Date(from) : undefined,
-      to: to ? new Date(to) : undefined,
+      from: parsedFrom,
+      to: parsedTo,
       jarId,
     });
 
@@ -98,5 +108,23 @@ export class ExpensesController {
       tag: expense.tag,
       createdAt: expense.createdAt,
     };
+  }
+
+  private parseOptionalDate(
+    value: string | undefined,
+    field: 'from' | 'to',
+  ): Date | undefined {
+    if (!value) {
+      return undefined;
+    }
+
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      throw new BadRequestException(
+        `Invalid "${field}" date. Use an ISO-8601 date string.`,
+      );
+    }
+
+    return parsed;
   }
 }

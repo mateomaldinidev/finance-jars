@@ -13,7 +13,8 @@ type ListIncomesInput = {
 @Injectable()
 export class ListIncomesUseCase {
   constructor(
-    @Inject(INCOME_REPOSITORY) private readonly incomeRepository: IncomeRepository,
+    @Inject(INCOME_REPOSITORY)
+    private readonly incomeRepository: IncomeRepository,
   ) {}
 
   async execute(input: ListIncomesInput): Promise<IncomeEntity[]> {

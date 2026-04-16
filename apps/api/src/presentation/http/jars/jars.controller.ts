@@ -51,7 +51,9 @@ export class JarsController {
   }
 
   @Get()
-  async findAll(@CurrentUser() currentUser: { id: string }): Promise<JarResponseDto[]> {
+  async findAll(
+    @CurrentUser() currentUser: { id: string },
+  ): Promise<JarResponseDto[]> {
     const jars = await this.listJarsUseCase.execute({
       userId: currentUser.id,
     });
@@ -59,7 +61,9 @@ export class JarsController {
   }
 
   @Get('active')
-  async findActive(@CurrentUser() currentUser: { id: string }): Promise<JarResponseDto[]> {
+  async findActive(
+    @CurrentUser() currentUser: { id: string },
+  ): Promise<JarResponseDto[]> {
     const jars = await this.getActiveJarsUseCase.execute({
       userId: currentUser.id,
     });

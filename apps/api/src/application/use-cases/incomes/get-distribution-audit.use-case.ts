@@ -29,9 +29,7 @@ export class GetDistributionAuditUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
-  async execute(
-    input: GetDistributionAuditInput,
-  ): Promise<DistributionAudit> {
+  async execute(input: GetDistributionAuditInput): Promise<DistributionAudit> {
     // Obtener distribución
     const distribution =
       await this.distributionRepository.findByIncomeMovementId(

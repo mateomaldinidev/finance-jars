@@ -7,7 +7,9 @@ import { PrismaService } from '../prisma.service';
 export class PrismaJarRepository implements JarRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(jar: Omit<JarEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<JarEntity> {
+  async create(
+    jar: Omit<JarEntity, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<JarEntity> {
     const created = await this.prisma.jar.create({
       data: {
         userId: jar.userId,
@@ -68,7 +70,11 @@ export class PrismaJarRepository implements JarRepository {
     return jars.map((jar) => this.toDomain(jar));
   }
 
-  async update(id: string, userId: string, updates: Partial<JarEntity>): Promise<JarEntity | null> {
+  async update(
+    id: string,
+    userId: string,
+    updates: Partial<JarEntity>,
+  ): Promise<JarEntity | null> {
     const jar = await this.prisma.jar.findFirst({
       where: {
         id,

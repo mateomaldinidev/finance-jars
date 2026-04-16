@@ -31,7 +31,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body antialiased">
-      <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-border/20 bg-bg px-4 py-8">
+      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col border-r border-border/20 bg-bg px-4 py-8 lg:flex">
         <div className="mb-12 px-2">
           <h1 className="m-0 text-lg font-bold tracking-tight text-primary">Finance Jars</h1>
           <p className="mt-1 font-label text-[10px] uppercase tracking-[0.2em] text-muted">Terminal v1.0</p>
@@ -56,20 +56,39 @@ export function Layout() {
         </div>
       </aside>
 
-      <header className="fixed right-0 top-0 z-30 flex h-16 w-[calc(100%-16rem)] items-center justify-between bg-bg/70 px-8 backdrop-blur-xl">
-        <div className="w-full max-w-md">
+      <header className="fixed left-0 right-0 top-0 z-30 flex h-16 items-center justify-between bg-bg/80 px-4 backdrop-blur-xl lg:left-64 lg:px-8">
+        <div className="w-full max-w-md lg:block hidden">
           <div className="rounded-lg border border-border/15 bg-card px-3 py-2 font-label text-[10px] uppercase tracking-[0.2em] text-muted">
             Navegación local · estado consistente
           </div>
         </div>
-        <div className="ml-6">
+        <div className="lg:ml-6">
           <Button size="sm" variant="primary">
             Modo local
           </Button>
         </div>
       </header>
 
-      <main className="ml-64 min-h-screen px-8 pb-10 pt-24">
+      <nav className="fixed left-0 right-0 top-16 z-20 flex gap-2 overflow-x-auto border-b border-border/20 bg-bg/90 px-4 py-2 backdrop-blur-xl lg:hidden">
+        {navLinks.map((link) => (
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={({ isActive }) =>
+              [
+                'whitespace-nowrap rounded-lg px-3 py-2 text-xs transition-all duration-200',
+                isActive
+                  ? 'bg-cardHighest text-accent border border-accent/30'
+                  : 'text-muted border border-border/20',
+              ].join(' ')
+            }
+          >
+            {link.label}
+          </NavLink>
+        ))}
+      </nav>
+
+      <main className="min-h-screen px-4 pb-10 pt-32 lg:ml-64 lg:px-8 lg:pt-24">
         <div className="mx-auto max-w-7xl">
           <Outlet />
         </div>

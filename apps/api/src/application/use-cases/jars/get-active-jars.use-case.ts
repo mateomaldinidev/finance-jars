@@ -10,7 +10,9 @@ type GetActiveJarsInput = {
 
 @Injectable()
 export class GetActiveJarsUseCase {
-  constructor(@Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository) {}
+  constructor(
+    @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
+  ) {}
 
   async execute(input: GetActiveJarsInput): Promise<JarEntity[]> {
     return this.jarRepository.listActiveByUser(input.userId);

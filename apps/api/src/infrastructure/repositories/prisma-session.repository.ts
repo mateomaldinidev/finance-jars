@@ -6,11 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class PrismaSessionRepository implements SessionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  createSession(input: {
-    userId: string;
-    tokenHash: string;
-    expiresAt: Date;
-  }) {
+  createSession(input: { userId: string; tokenHash: string; expiresAt: Date }) {
     return this.prisma.authSession.create({
       data: {
         userId: input.userId,

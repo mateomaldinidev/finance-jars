@@ -42,7 +42,10 @@ export class BootstrapFirstUserUseCase {
     }
 
     const passwordHash = await this.passwordHasher.hash(password);
-    const user = await this.userRepository.createUser({ username, passwordHash });
+    const user = await this.userRepository.createUser({
+      username,
+      passwordHash,
+    });
 
     const sessionToken = this.sessionTokenService.generateToken();
     const tokenHash = this.sessionTokenService.hashToken(sessionToken);

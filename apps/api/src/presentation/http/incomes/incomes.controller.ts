@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Post,
@@ -57,17 +58,17 @@ export class IncomesController {
     });
 
     return {
-      id: result.distributionId,
-      incomeMovementId: id,
-      totalAmount: 0,
-      currency: '',
+      id: result.distribution.id,
+      incomeMovementId: result.distribution.incomeMovementId,
+      totalAmount: result.distribution.totalAmount,
+      currency: result.distribution.currency,
       movements: result.movements.map((m) => ({
         jarId: m.jarId,
         jarName: m.jarName,
         amount: m.amount,
         percentage: m.percentage,
       })),
-      distributedAt: new Date(),
+      distributedAt: result.distribution.distributedAt,
     };
   }
 
@@ -77,10 +78,19 @@ export class IncomesController {
     @Query('from') from?: string,
     @Query('to') to?: string,
   ): Promise<IncomeResponseDto[]> {
+    const parsedFrom = this.parseOptionalDate(from, 'from');
+    const parsedTo = this.parseOptionalDate(to, 'to');
+
+    if (parsedFrom && parsedTo && parsedFrom > parsedTo) {
+      throw new BadRequestException(
+        'The "from" date must be less than or equal to "to" date.',
+      );
+    }
+
     const incomes = await this.listIncomesUseCase.execute({
       userId: currentUser.id,
-      from: from ? new Date(from) : undefined,
-      to: to ? new Date(to) : undefined,
+      from: parsedFrom,
+      to: parsedTo,
     });
 
     return incomes.map((income) => this.toIncomeResponse(income));
@@ -130,5 +140,23 @@ export class IncomesController {
       tag: income.tag,
       createdAt: income.createdAt,
     };
+  }
+
+  private parseOptionalDate(
+    value: string | undefined,
+    field: 'from' | 'to',
+  ): Date | undefined {
+    if (!value) {
+      return undefined;
+    }
+
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      throw new BadRequestException(
+        `Invalid "${field}" date. Use an ISO-8601 date string.`,
+      );
+    }
+
+    return parsed;
   }
 }

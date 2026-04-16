@@ -31,9 +31,8 @@ export class GetSessionUseCase {
     }
 
     const tokenHash = this.sessionTokenService.hashToken(sessionToken);
-    const activeSession = await this.sessionRepository.findActiveByTokenHash(
-      tokenHash,
-    );
+    const activeSession =
+      await this.sessionRepository.findActiveByTokenHash(tokenHash);
 
     if (!activeSession) {
       return {

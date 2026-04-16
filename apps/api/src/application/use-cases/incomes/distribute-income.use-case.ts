@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import type { IncomeRepository } from '../../../domain/repositories/income.repository';
 import type { IncomeDistributionRepository } from '../../../domain/repositories/income-distribution.repository';
@@ -26,7 +30,8 @@ export interface DistributionMovement {
 @Injectable()
 export class DistributeIncomeUseCase {
   constructor(
-    @Inject(INCOME_REPOSITORY) private readonly incomeRepository: IncomeRepository,
+    @Inject(INCOME_REPOSITORY)
+    private readonly incomeRepository: IncomeRepository,
     @Inject(INCOME_DISTRIBUTION_REPOSITORY)
     private readonly distributionRepository: IncomeDistributionRepository,
     @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
@@ -34,9 +39,16 @@ export class DistributeIncomeUseCase {
     private readonly calculator: IncomeDistributionCalculatorService,
   ) {}
 
-  async execute(
-    input: DistributeIncomeInput,
-  ): Promise<{ movements: DistributionMovement[]; distributionId: string }> {
+  async execute(input: DistributeIncomeInput): Promise<{
+    distribution: {
+      id: string;
+      incomeMovementId: string;
+      totalAmount: any;
+      currency: string;
+      distributedAt: Date | null;
+    };
+    movements: DistributionMovement[];
+  }> {
     // Obtener el ingreso original
     const income = await this.incomeRepository.findById(
       input.incomeMovementId,
@@ -125,8 +137,14 @@ export class DistributeIncomeUseCase {
 
     // Retornar resultado
     return {
+      distribution: {
+        id: result.distribution.id,
+        incomeMovementId: result.distribution.incomeMovementId,
+        totalAmount: result.distribution.totalAmount,
+        currency: result.distribution.currency,
+        distributedAt: result.distribution.distributedAt,
+      },
       movements: distributionCalc,
-      distributionId: result.distribution.id,
     };
   }
 }

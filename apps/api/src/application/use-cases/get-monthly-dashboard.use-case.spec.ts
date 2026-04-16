@@ -15,6 +15,19 @@ describe('GetMonthlyDashboardUseCase', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
+  it('rejects out-of-range month numbers', async () => {
+    const useCase = new GetMonthlyDashboardUseCase({
+      getMonthlyData: jest.fn(),
+    } as any);
+
+    await expect(
+      useCase.execute({
+        userId: 'user-1',
+        month: '2026-13',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
   it('returns formatted dashboard response', async () => {
     const repo = {
       getMonthlyData: jest.fn().mockResolvedValue({
@@ -24,7 +37,9 @@ describe('GetMonthlyDashboardUseCase', () => {
         expenses: 400,
         balance: 600,
         estimatedNetWorth: 1600,
-        monthlyByCurrency: [{ currency: 'ARS', incomes: 1000, expenses: 400, balance: 600 }],
+        monthlyByCurrency: [
+          { currency: 'ARS', incomes: 1000, expenses: 400, balance: 600 },
+        ],
         jarBalances: [
           {
             jarId: 'jar-1',
@@ -39,7 +54,10 @@ describe('GetMonthlyDashboardUseCase', () => {
     };
 
     const useCase = new GetMonthlyDashboardUseCase(repo as any);
-    const result = await useCase.execute({ userId: 'user-1', month: '2026-04' });
+    const result = await useCase.execute({
+      userId: 'user-1',
+      month: '2026-04',
+    });
 
     expect(repo.getMonthlyData).toHaveBeenCalled();
     expect(result.summary.balance).toBe(600);

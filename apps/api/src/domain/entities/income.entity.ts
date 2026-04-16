@@ -1,4 +1,3 @@
-
 export type IncomeEntity = {
   id: string;
   userId: string;

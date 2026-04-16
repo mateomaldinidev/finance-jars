@@ -12,7 +12,7 @@ export interface JarRepository {
 
   findById(id: string, userId: string): Promise<JarEntity | null>;
   findByName(name: string, userId: string): Promise<JarEntity | null>;
-  
+
   listByUser(
     userId: string,
     options?: { active?: boolean; includeDeleted?: boolean },

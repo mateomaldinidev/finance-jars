@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import type { CreateIncomeInput } from '../hooks/useIncomes';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { Select } from './ui/Select';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeInput) => Promise<void>;
@@ -39,17 +42,17 @@ export function IncomeForm({
     setError(null);
 
     if (formData.amount <= 0) {
-      setError('Amount must be greater than 0');
+      setError('El monto debe ser mayor a 0.');
       return;
     }
 
     if (!formData.currency) {
-      setError('Currency is required');
+      setError('Selecciona una moneda.');
       return;
     }
 
     if (!formData.occurredAt) {
-      setError('Date is required');
+      setError('Selecciona una fecha.');
       return;
     }
 
@@ -62,71 +65,57 @@ export function IncomeForm({
         tag: formData.tag,
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'No se pudo crear el ingreso.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded-lg shadow">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-            Monto *
-          </label>
-          <input
-            id="amount"
-            name="amount"
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.amount}
-            onChange={handleChange}
-            disabled={isLoading}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
-            Moneda *
-          </label>
-          <select
-            id="currency"
-            name="currency"
-            value={formData.currency}
-            onChange={handleChange}
-            disabled={isLoading}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
-          >
-            <option value="USD">USD</option>
-            <option value="ARS">ARS</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="occurredAt" className="block text-sm font-medium text-gray-700">
-          Fecha *
-        </label>
-        <input
-          id="occurredAt"
-          name="occurredAt"
-          type="date"
-          value={
-            typeof formData.occurredAt === 'string'
-              ? formData.occurredAt
-              : new Date(formData.occurredAt).toISOString().split('T')[0]
-          }
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-border/20 bg-card p-4">
+      <div className="grid gap-4 md:grid-cols-2">
+        <Input
+          id="amount"
+          name="amount"
+          type="number"
+          step="0.01"
+          min="0"
+          label="Monto *"
+          value={formData.amount}
           onChange={handleChange}
           disabled={isLoading}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
         />
+
+        <Select
+          id="currency"
+          name="currency"
+          label="Moneda *"
+          value={formData.currency}
+          onChange={handleChange}
+          disabled={isLoading}
+        >
+          <option value="USD">USD</option>
+          <option value="ARS">ARS</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="JPY">JPY</option>
+        </Select>
       </div>
 
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+      <Input
+        id="occurredAt"
+        name="occurredAt"
+        type="date"
+        label="Fecha *"
+        value={
+          typeof formData.occurredAt === 'string'
+            ? formData.occurredAt
+            : new Date(formData.occurredAt).toISOString().split('T')[0]
+        }
+        onChange={handleChange}
+        disabled={isLoading}
+      />
+
+      <div className="space-y-1.5">
+        <label htmlFor="description" className="font-label text-[10px] uppercase tracking-[0.2em] text-muted">
           Descripción
         </label>
         <textarea
@@ -137,49 +126,44 @@ export function IncomeForm({
           maxLength={250}
           rows={3}
           disabled={isLoading}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
+          className="block w-full rounded-lg border border-border/20 bg-cardHighest px-3 py-2.5 text-sm text-text placeholder:text-muted/60 focus:border-accent/60 focus:outline-none"
         />
       </div>
 
-      <div>
-        <label htmlFor="tag" className="block text-sm font-medium text-gray-700">
-          Etiqueta
-        </label>
-        <input
-          id="tag"
-          name="tag"
-          type="text"
-          value={formData.tag || ''}
-          onChange={handleChange}
-          maxLength={50}
-          disabled={isLoading}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
-          placeholder="ej: salary, bonus, refund"
-        />
-      </div>
+      <Input
+        id="tag"
+        name="tag"
+        type="text"
+        label="Etiqueta"
+        value={formData.tag || ''}
+        onChange={handleChange}
+        maxLength={50}
+        disabled={isLoading}
+        placeholder="ej: salary, bonus, refund"
+      />
 
       {error && (
-        <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="rounded-lg border border-danger/40 bg-danger/10 p-3 text-danger">
           {error}
         </div>
       )}
 
       <div className="flex gap-2 justify-end">
-        <button
+        <Button
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          variant="ghost"
         >
           Cancelar
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isLoading}
-          className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50"
+          variant="primary"
         >
           {isLoading ? 'Guardando...' : 'Crear Ingreso'}
-        </button>
+        </Button>
       </div>
     </form>
   );

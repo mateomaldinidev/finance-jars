@@ -50,8 +50,15 @@ export class PrismaIncomeRepository implements IncomeRepository {
       where: {
         userId,
         type: 'INCOME',
-        ...(options?.from && { occurredAt: { gte: options.from } }),
-        ...(options?.to && { occurredAt: { lte: options.to } }),
+        jarId: null,
+        ...(options?.from || options?.to
+          ? {
+              occurredAt: {
+                ...(options?.from ? { gte: options.from } : {}),
+                ...(options?.to ? { lte: options.to } : {}),
+              },
+            }
+          : {}),
       },
       orderBy: { occurredAt: 'desc' },
     });

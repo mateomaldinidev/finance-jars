@@ -10,10 +10,15 @@ type DeleteJarInput = {
 
 @Injectable()
 export class DeleteJarUseCase {
-  constructor(@Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository) {}
+  constructor(
+    @Inject(JAR_REPOSITORY) private readonly jarRepository: JarRepository,
+  ) {}
 
   async execute(input: DeleteJarInput): Promise<void> {
-    const deleted = await this.jarRepository.softDelete(input.jarId, input.userId);
+    const deleted = await this.jarRepository.softDelete(
+      input.jarId,
+      input.userId,
+    );
     if (!deleted) {
       throw new NotFoundException('Jar not found');
     }

@@ -1,7 +1,9 @@
 import type { ExpenseEntity } from '../entities/expense.entity';
 
 export interface ExpenseRepository {
-  create(input: Omit<ExpenseEntity, 'id' | 'createdAt'>): Promise<ExpenseEntity>;
+  create(
+    input: Omit<ExpenseEntity, 'id' | 'createdAt'>,
+  ): Promise<ExpenseEntity>;
   findById(id: string, userId: string): Promise<ExpenseEntity | null>;
   listByUser(
     userId: string,

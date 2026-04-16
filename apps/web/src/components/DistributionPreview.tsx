@@ -1,5 +1,5 @@
 import type { DistributionMovement } from '../hooks/useIncomes';
-import { getColorTailwind } from '../constants/jar-colors';
+import { Button } from './ui/Button';
 
 interface DistributionPreviewProps {
   movements: DistributionMovement[];
@@ -14,50 +14,56 @@ export function DistributionPreview({
   currency,
   onClose,
 }: DistributionPreviewProps) {
-  const distributed = movements.reduce((sum, m) => sum + parseFloat(m.amount as any), 0);
+  const distributed = movements.reduce((sum, movement) => {
+    return sum + Number(movement.amount);
+  }, 0);
   const undistributed = totalAmount - distributed;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-96 overflow-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 px-6 py-4">
-          <h3 className="text-xl font-bold text-gray-900">Distribución de Ingreso</h3>
-          <p className="text-sm text-gray-600 mt-1">
-            Total: {totalAmount.toFixed(2)} {currency}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+      <div className="max-h-[80vh] w-full max-w-2xl overflow-auto rounded-xl border border-border/20 bg-card shadow-float">
+        <div className="sticky top-0 border-b border-border/20 bg-card px-6 py-4">
+          <h3 className="m-0 text-xl font-semibold text-text">Distribución de ingreso</h3>
+          <p className="mt-1 text-sm text-muted">
+            Total distribuible: {Number(totalAmount).toFixed(2)} {currency}
           </p>
         </div>
 
         <div className="p-6 space-y-4">
           {movements.map((movement, idx) => (
-            <div
-              key={idx}
-              className={`${getColorTailwind(movement.jarName as any)} bg-opacity-10 border-2 ${getColorTailwind(movement.jarName as any)} border-opacity-30 rounded-lg p-4`}
-            >
-              <div className="flex justify-between items-start">
+            <article key={`${movement.jarId}-${idx}`} className="rounded-lg border border-border/20 bg-cardHigh p-4">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900">{movement.jarName}</h4>
-                  <p className="text-sm text-gray-600">{movement.percentage}% de distribución</p>
+                  <h4 className="m-0 font-semibold text-text">{movement.jarName}</h4>
+                  <p className="mt-1 text-sm text-muted">{movement.percentage}% de distribución</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-bold text-gray-900">
-                    {parseFloat(movement.amount as any).toFixed(2)} {currency}
+                  <p className="m-0 text-lg font-semibold text-text">
+                    {Number(movement.amount).toFixed(2)} {currency}
                   </p>
                 </div>
               </div>
-            </div>
+
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-bg">
+                <div
+                  className="h-full rounded-full bg-accent"
+                  style={{ width: `${Math.min(100, Math.max(0, movement.percentage))}%` }}
+                />
+              </div>
+            </article>
           ))}
 
           {undistributed > 0 && (
-            <div className="bg-gray-100 rounded-lg p-4">
-              <div className="flex justify-between items-start">
+            <div className="rounded-lg border border-border/20 bg-bg p-4">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="font-semibold text-gray-700">No Distribuido</h4>
-                  <p className="text-sm text-gray-600">
+                  <h4 className="m-0 font-semibold text-text">No distribuido</h4>
+                  <p className="mt-1 text-sm text-muted">
                     Porcentajes no alcanzan el 100%
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-bold text-gray-700">
+                  <p className="m-0 text-lg font-semibold text-text">
                     {undistributed.toFixed(2)} {currency}
                   </p>
                 </div>
@@ -66,13 +72,10 @@ export function DistributionPreview({
           )}
         </div>
 
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700"
-          >
+        <div className="sticky bottom-0 flex justify-end border-t border-border/20 bg-card px-6 py-4">
+          <Button onClick={onClose} variant="primary">
             Entendido
-          </button>
+          </Button>
         </div>
       </div>
     </div>

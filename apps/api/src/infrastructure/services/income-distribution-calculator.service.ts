@@ -43,10 +43,7 @@ export class IncomeDistributionCalculatorService {
         .dividedBy(100)
         .toDecimalPlaces(decimalPlaces, Decimal.ROUND_DOWN); // FLOOR
 
-      const residue = total
-        .times(percentage)
-        .dividedBy(100)
-        .minus(calculated);
+      const residue = total.times(percentage).dividedBy(100).minus(calculated);
 
       return { jar, calculated, residue };
     });

@@ -17,7 +17,8 @@ type CreateIncomeInput = {
 @Injectable()
 export class CreateIncomeUseCase {
   constructor(
-    @Inject(INCOME_REPOSITORY) private readonly incomeRepository: IncomeRepository,
+    @Inject(INCOME_REPOSITORY)
+    private readonly incomeRepository: IncomeRepository,
   ) {}
 
   async execute(input: CreateIncomeInput): Promise<IncomeEntity> {
@@ -51,10 +52,7 @@ export class CreateIncomeUseCase {
     }
 
     // Validar tag
-    if (
-      input.tag &&
-      input.tag.length > INCOME_CONSTANTS.MAX_TAG_LENGTH
-    ) {
+    if (input.tag && input.tag.length > INCOME_CONSTANTS.MAX_TAG_LENGTH) {
       throw new BadRequestException(
         `Tag cannot exceed ${INCOME_CONSTANTS.MAX_TAG_LENGTH} characters`,
       );
