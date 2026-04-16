@@ -3,4 +3,6 @@ export type UserEntity = {
   username: string;
   passwordHash: string;
   baseCurrency: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
