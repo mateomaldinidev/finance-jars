@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { Button } from '../components/ui/Button'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
 import { useAppStore } from '../store/useAppStore'
 
 export function LoginPage() {
@@ -55,48 +58,49 @@ export function LoginPage() {
   }
 
   return (
-    <section className="mx-auto max-w-md rounded-xl border border-border bg-card p-6 shadow-lg shadow-black/20">
-      <h2 className="mt-0 text-xl">
-        {requiresBootstrap ? 'Crear primer usuario local' : 'Ingreso local'}
-      </h2>
-      <p className="text-sm text-muted">
-        {requiresBootstrap
-          ? 'No hay usuarios cargados. Crea el usuario inicial para comenzar.'
-          : 'Inicia sesion con tu usuario y contrasena local.'}
-      </p>
-      <form className="mt-4 flex flex-col gap-3" onSubmit={onSubmit}>
-        <input
-          className="rounded-md border border-border bg-bg px-3 py-2 text-text"
-          placeholder="Usuario"
-          value={usuario}
-          autoComplete="username"
-          onChange={(e) => setUsuarioInput(e.target.value)}
-        />
-        <input
-          className="rounded-md border border-border bg-bg px-3 py-2 text-text"
-          placeholder="Contraseña"
-          type="password"
-          value={password}
-          autoComplete={requiresBootstrap ? 'new-password' : 'current-password'}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {authError ? (
-          <p className="m-0 rounded-md border border-red-900/50 bg-red-950/30 px-3 py-2 text-sm text-red-200">
-            {authError}
-          </p>
-        ) : null}
-        <button
-          className="rounded-md border border-accent bg-accent/10 px-3 py-2 font-medium text-text"
-          disabled={isSubmitting}
-          type="submit"
-        >
-          {isSubmitting
-            ? 'Procesando...'
-            : requiresBootstrap
-              ? 'Crear usuario inicial'
-              : 'Entrar'}
-        </button>
-      </form>
+    <section className="grid min-h-[calc(100vh-7rem)] place-items-center">
+      <Card className="w-full max-w-md border-border/20 bg-cardHigh p-7 shadow-float" title="Acceso local">
+        <p className="mb-0 mt-1 text-sm text-muted">
+          {requiresBootstrap
+            ? 'No hay usuarios cargados. Crea el usuario inicial para comenzar.'
+            : 'Ingresá con tu usuario y contraseña local.'}
+        </p>
+
+        <form className="mt-6 space-y-4" onSubmit={onSubmit}>
+          <Input
+            name="usuario"
+            label="Usuario"
+            placeholder="usuario"
+            value={usuario}
+            autoComplete="username"
+            onChange={(event) => setUsuarioInput(event.target.value)}
+          />
+
+          <Input
+            name="password"
+            label="Contraseña"
+            placeholder="••••••••"
+            type="password"
+            value={password}
+            autoComplete={requiresBootstrap ? 'new-password' : 'current-password'}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+
+          {authError ? (
+            <p className="m-0 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 text-sm text-danger">
+              {authError}
+            </p>
+          ) : null}
+
+          <Button className="w-full" variant="primary" size="lg" disabled={isSubmitting} type="submit">
+            {isSubmitting
+              ? 'Procesando...'
+              : requiresBootstrap
+                ? 'Crear usuario inicial'
+                : 'Entrar'}
+          </Button>
+        </form>
+      </Card>
     </section>
   )
 }

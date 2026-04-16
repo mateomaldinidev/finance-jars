@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color-scheme: dark;
 }
 
 html,
@@ -14,6 +17,23 @@ body,
 
 body {
   margin: 0;
-  background-color: #0b0f19;
-  color: #e5e7eb;
+  background-color: #0e0e0e;
+  color: #e7e5e4;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: #04dcff;
+  color: #0e0e0e;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(4, 220, 255, 0.65);
+  outline-offset: 2px;
 }

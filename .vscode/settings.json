@@ -2,6 +2,7 @@
     "chat.tools.terminal.autoApprove": {
         "npm install": true,
         "npm run prisma:generate": true,
-        "./node_modules/.bin/tsc": true
+        "./node_modules/.bin/tsc": true,
+        "npm run dev:api": true
     }
 }
