@@ -1,0 +1,31 @@
+{
+  "name": "finance-jars",
+  "version": "1.0.0",
+  "description": "Una app **local-first** para organizar ingresos, gastos y frascos de dinero de forma simple, rápida y privada.  ✨ **Stack:** React · NestJS · Prisma · SQLite   🎯 **Objetivo:** uso personal, cero costo, diseño minimalista   🔐 **Auth local** · 💸 **Gastos por frasco** · 📊 **Dashboard mensual** · 🌙 **Dark mode**",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:web": "npm run dev -w @finance-jars/web",
+    "dev:api": "npm run dev -w @finance-jars/api",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mateomaldinidev/finance-jars.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/mateomaldinidev/finance-jars/issues"
+  },
+  "homepage": "https://github.com/mateomaldinidev/finance-jars#readme",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
