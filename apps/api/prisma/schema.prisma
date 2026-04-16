@@ -19,10 +19,11 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  jars       Jar[]
-  movements  Movement[]
-  rules      IncomeDistributionRule[]
-  sessions   AuthSession[]
+  jars                       Jar[]
+  movements                  Movement[]
+  rules                      IncomeDistributionRule[]
+  sessions                   AuthSession[]
+  miscIncomeDistributions    IncomeDistribution[]
 }
 
 model AuthSession {
@@ -40,21 +41,25 @@ model AuthSession {
 }
 
 model Jar {
-  id          String   @id @default(cuid())
-  userId      String
-  name        String
-  description String?
-  targetAmount Decimal?
-  currency    String
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  userId              String
+  name                String
+  color               String   @default("blue")
+  description         String?
+  percentageOfIncome  Int      @default(0)
+  currency            String
+  active              Boolean  @default(true)
+  deletedAt           DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   movements Movement[]
   rules     IncomeDistributionRule[]
 
   @@unique([userId, name])
+  @@index([userId, deletedAt])
+  @@index([userId, active, deletedAt])
 }
 
 model Movement {
@@ -71,8 +76,25 @@ model Movement {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   jar  Jar? @relation(fields: [jarId], references: [id], onDelete: SetNull)
+  distribution IncomeDistribution?
 
   @@index([userId, occurredAt])
+}
+
+model IncomeDistribution {
+  id                 String   @id @default(cuid())
+  userId             String
+  incomeMovementId   String   @unique
+  totalAmount        Decimal
+  currency           String
+  distributedAmount  Decimal  @default(0)
+  distributedAt      DateTime?
+  createdAt          DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  incomeMovement Movement @relation(fields: [incomeMovementId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 model IncomeDistributionRule {
